@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CelticEgyptianRatscrewKata.Game;
 
 namespace ConsoleBasedGame
@@ -10,7 +12,7 @@ namespace ConsoleBasedGame
             GameController game = new GameFactory().Create();
 
             var userInterface = new UserInterface();
-            IEnumerable<PlayerInfo> playerInfos = userInterface.GetPlayerInfoFromUserLazily();
+            IEnumerable<PlayerInfo> playerInfos = userInterface.GetPlayerInfoFromUserLazily().ToList();
 
             foreach (PlayerInfo playerInfo in playerInfos)
             {
@@ -22,8 +24,9 @@ namespace ConsoleBasedGame
             char userInput;
             while (userInterface.TryReadUserInput(out userInput))
             {
-
-            } 
+                if (!playerInfos.Any(info => info.PlayCardKey == userInput || info.SnapKey == userInput))
+                    Console.WriteLine("Invalid input");
+            }
         }
     }
 }
