@@ -9,6 +9,8 @@ namespace ConsoleBasedGame
     {
         static void Main(string[] args)
         {
+            var playerActions = new Dictionary<char, Action>();
+
             GameController game = new GameFactory().Create();
 
             var userInterface = new UserInterface();
@@ -16,7 +18,12 @@ namespace ConsoleBasedGame
 
             foreach (PlayerInfo playerInfo in playerInfos)
             {
-                game.AddPlayer(new Player(playerInfo.PlayerName));
+                var player = new Player(playerInfo.PlayerName);
+
+                playerActions.Add(playerInfo.PlayCardKey, () => game.PlayCard(player));
+                playerActions.Add(playerInfo.SnapKey, () => game.AttemptSnap(player));
+
+                game.AddPlayer(player);
             }
 
             game.StartGame(GameFactory.CreateFullDeckOfCards());
@@ -24,8 +31,15 @@ namespace ConsoleBasedGame
             char userInput;
             while (userInterface.TryReadUserInput(out userInput))
             {
-                if (!playerInfos.Any(info => info.PlayCardKey == userInput || info.SnapKey == userInput))
+                Action playerAction;
+                if (playerActions.TryGetValue(userInput, out playerAction))
+                {
+                    playerAction();
+                }
+                else
+                {
                     Console.WriteLine("Invalid input");
+                }
             }
         }
     }
