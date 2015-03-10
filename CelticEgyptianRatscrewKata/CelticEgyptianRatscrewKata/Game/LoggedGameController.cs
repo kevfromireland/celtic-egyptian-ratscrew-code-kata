@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CelticEgyptianRatscrewKata.Game
 {
@@ -21,9 +22,25 @@ namespace CelticEgyptianRatscrewKata.Game
         public PlayCardResult PlayCard(IPlayer player)
         {
             var playCardResult = _gameController.PlayCard(player);
-            _log.Log(string.Format("{0} has played the {1}", player.Name, playCardResult.PlayedCard));
+
+            _log.Log(GetPlayCardResultLogMessage(player, playCardResult));
             LogGameState();
             return playCardResult;
+        }
+
+        private string GetPlayCardResultLogMessage(IPlayer player, PlayCardResult playCardResult)
+        {
+            switch (playCardResult.Validity)
+            {
+                case PlayCardResultValidity.Valid:
+                    return string.Format("{0} has played the {1}", player.Name, playCardResult.PlayedCard);
+                case PlayCardResultValidity.PlayerHasNoCards:
+                    return string.Format("{0} had no cards so couldn't play", player.Name);
+                case PlayCardResultValidity.PlayedOutOfTurn:
+                    return string.Format("{0} has played {1} but it was out of turn", player.Name, playCardResult.PlayedCard);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public bool AttemptSnap(IPlayer player)
