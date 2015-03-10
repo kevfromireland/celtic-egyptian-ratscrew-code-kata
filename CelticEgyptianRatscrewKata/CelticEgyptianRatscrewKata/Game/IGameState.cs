@@ -9,6 +9,8 @@ namespace CelticEgyptianRatscrewKata.Game
         /// </summary>
         Cards Stack { get; }
 
+        string CurrentPlayer { get; set; }
+
         /// <summary>
         /// Add the given player to the game with the given deck.
         /// </summary>
@@ -19,6 +21,13 @@ namespace CelticEgyptianRatscrewKata.Game
         /// Play the top card of the given player's deck.
         /// </summary>
         Card PlayCard(string playerId);
+
+        /// <summary>
+        /// Moves the top card of the given player's deck to the bottom of the stack
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
+        Card AddCardToBottom(string playerId);
 
         /// <summary>
         /// Wins the stack for the given player.

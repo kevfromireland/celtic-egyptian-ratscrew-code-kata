@@ -30,6 +30,8 @@ namespace CelticEgyptianRatscrewKata.Game
 
         public Cards Stack { get {return new Cards(_stack);} }
 
+        public string CurrentPlayer { get; set; }
+
         /// <summary>
         /// Add the given player to the game with the given deck.
         /// </summary>
@@ -50,6 +52,16 @@ namespace CelticEgyptianRatscrewKata.Game
 
             var topCard = _decks[playerId].Pop();
             _stack.AddToTop(topCard);
+            return topCard;
+        }
+
+        public Card AddCardToBottom(string playerId)
+        {
+            if (!_decks.ContainsKey(playerId)) throw new ArgumentException("The selected player does not exist");
+            if (!_decks[playerId].Any()) throw new ArgumentException("The selected player doesn't have any cards left");
+
+            var topCard = _decks[playerId].Pop();
+            _stack.AddToBottom(topCard);
             return topCard;
         }
 

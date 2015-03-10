@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CelticEgyptianRatscrewKata.Game;
 using CelticEgyptianRatscrewKata.GameSetup;
 using CelticEgyptianRatscrewKata.SnapRules;
+using Moq;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -9,6 +11,27 @@ namespace CelticEgyptianRatscrewKata.Tests
 {
     public class GameControllerTests
     {
+        [Test]
+        public void CardsByPlayersOutOfTurnGoToBottomOfTheStack()
+        {
+            var gameState = new GameState();
+            var gameController = CreateGameController(gameState);
+            var playerA = new Player("A");
+            var playerB = new Player("B");
+            var deck = CreateNewSimpleDeck();
+
+            gameController.AddPlayer(playerA);
+            gameController.AddPlayer(playerB);
+            gameController.StartGame(deck);
+
+            //Act
+            gameController.PlayCard(playerA);
+            var resultAfterSecondCard = gameController.PlayCard(playerA);
+
+            //Expectation
+            Assert.That(resultAfterSecondCard.Validity, Is.EqualTo(PlayCardResultValidity.PlayedOutOfTurn));
+            Assert.That(resultAfterSecondCard.PlayedCard, Is.EqualTo(gameState.Stack.Last()));
+        }
         [Test]
         public void RedRouteWinnerAfterSomeRoundsOfPlay()
         {
@@ -80,14 +103,13 @@ namespace CelticEgyptianRatscrewKata.Tests
             Assert.False(hasWinner);
         }
 
-        private static GameController CreateGameController()
+        private static GameController CreateGameController(IGameState gameState = null)
         {
-            var gameState = new GameState();
             var completeSnapValidator = CreateCompleteSnapValidator();
             var dealer = new Dealer();
             var noneShufflingShuffler = new NoneShufflingShuffler();
 
-            return new GameController(gameState, completeSnapValidator, dealer, noneShufflingShuffler);
+            return new GameController(gameState ?? new GameState(), completeSnapValidator, dealer, noneShufflingShuffler);
         }
 
         private static ISnapValidator CreateCompleteSnapValidator()

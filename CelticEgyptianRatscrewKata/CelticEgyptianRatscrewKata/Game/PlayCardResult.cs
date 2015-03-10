@@ -30,5 +30,10 @@ namespace CelticEgyptianRatscrewKata.Game
         {
             return new PlayCardResult(PlayCardResultValidity.Valid, playedCard);
         }
+
+        public static PlayCardResult OutOfTurn(Card playedCard)
+        {
+            return new PlayCardResult(PlayCardResultValidity.PlayedOutOfTurn, playedCard);
+        }
     }
 }

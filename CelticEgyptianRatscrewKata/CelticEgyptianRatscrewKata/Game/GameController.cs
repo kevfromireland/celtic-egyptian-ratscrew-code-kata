@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CelticEgyptianRatscrewKata.GameSetup;
@@ -15,9 +16,11 @@ namespace CelticEgyptianRatscrewKata.Game
         private readonly IShuffler _shuffler;
         private readonly IList<IPlayer> _players;
         private readonly IGameState _gameState;
+        private Dictionary<string, string> _nextPlayerMapping;
 
         public GameController(IGameState gameState, ISnapValidator snapValidator, IDealer dealer, IShuffler shuffler)
         {
+            _nextPlayerMapping = new Dictionary<string, string>();
             _players = new List<IPlayer>();
             _gameState = gameState;
             _snapValidator = snapValidator;
@@ -59,8 +62,14 @@ namespace CelticEgyptianRatscrewKata.Game
             if (!_gameState.HasCards(player.Name))
                 return PlayCardResult.NoCard();
 
-            var playedCard = _gameState.PlayCard(player.Name);
-            return PlayCardResult.Valid(playedCard);
+            if (_gameState.CurrentPlayer != player.Name)
+                return PlayCardResult.OutOfTurn(_gameState.AddCardToBottom(player.Name));
+
+            var playCardResult = PlayCardResult.Valid(_gameState.PlayCard(player.Name));
+
+            _gameState.CurrentPlayer = _nextPlayerMapping[player.Name];
+
+            return playCardResult;
         }
 
         public bool AttemptSnap(IPlayer player)
@@ -88,6 +97,13 @@ namespace CelticEgyptianRatscrewKata.Game
             {
                 _gameState.AddPlayer(_players[i].Name, decks[i]);
             }
+
+            _nextPlayerMapping = _players
+                .Zip(_players.Skip(1), Tuple.Create)
+                .Concat(new[] { Tuple.Create(_players.Last(), _players.First()) })
+                .ToDictionary(x => x.Item1.Name, x => x.Item2.Name);
+
+            _gameState.CurrentPlayer = _players.First().Name;
         }
 
         public bool TryGetWinner(out IPlayer winner)
