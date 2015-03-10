@@ -34,12 +34,14 @@ namespace CelticEgyptianRatscrewKata.Game
             return true;
         }
 
-        public void PlayCard(IPlayer player)
+        public Card PlayCard(IPlayer player)
         {
             if (m_GameState.HasCards(player.Name))
             {
-                m_GameState.PlayCard(player.Name);
+                return m_GameState.PlayCard(player.Name);
             }
+
+            return null;
         }
 
         public void AttemptSnap(IPlayer player)
