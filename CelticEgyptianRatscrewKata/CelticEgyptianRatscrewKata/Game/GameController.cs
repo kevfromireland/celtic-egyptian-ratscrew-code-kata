@@ -56,12 +56,11 @@ namespace CelticEgyptianRatscrewKata.Game
 
         public PlayCardResult PlayCard(IPlayer player)
         {
-            if (_gameState.HasCards(player.Name))
-            {
-                var playedCard = _gameState.PlayCard(player.Name);
-                return PlayCardResult.Valid(playedCard);
-            }
-            return PlayCardResult.NoCard();
+            if (!_gameState.HasCards(player.Name))
+                return PlayCardResult.NoCard();
+
+            var playedCard = _gameState.PlayCard(player.Name);
+            return PlayCardResult.Valid(playedCard);
         }
 
         public bool AttemptSnap(IPlayer player)
