@@ -10,22 +10,30 @@ namespace CelticEgyptianRatscrewKata.Game
     /// </summary>
     public class GameState : IGameState
     {
+        public enum SnapPenaltyState
+        {
+            PenaltyApplied,
+            PenaltyNotApplied
+        }
+
         private readonly Cards _stack;
         private readonly IDictionary<string, Cards> _decks;
+        private readonly IDictionary<string, SnapPenaltyState> _playerSnapPenaltyState;
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         public GameState()
-            : this(Cards.Empty(), new Dictionary<string, Cards>()) {}
+            : this(Cards.Empty(), new Dictionary<string, Cards>(), new Dictionary<string, SnapPenaltyState>()) {}
 
         /// <summary>
         /// Constructor to allow setting the central stack.
         /// </summary>
-        public GameState(Cards stack, IDictionary<string, Cards> decks)
+        public GameState(Cards stack, IDictionary<string, Cards> decks, Dictionary<string, SnapPenaltyState> playerSnapPenaltyState)
         {
             _stack = stack;
             _decks = decks;
+            _playerSnapPenaltyState = playerSnapPenaltyState;
         }
 
         public Cards Stack { get {return new Cards(_stack);} }
@@ -40,6 +48,7 @@ namespace CelticEgyptianRatscrewKata.Game
         {
             if (_decks.ContainsKey(playerId)) throw new ArgumentException("Can't add the same player twice");
             _decks.Add(playerId, deck);
+            _playerSnapPenaltyState.Add(playerId, SnapPenaltyState.PenaltyNotApplied);
         }
 
         /// <summary>
@@ -92,6 +101,20 @@ namespace CelticEgyptianRatscrewKata.Game
         {
             if (!_decks.ContainsKey(playerId)) throw new ArgumentException("The selected player doesn't exist");
             return _decks[playerId].Any();
+        }
+
+        public void ApplyPenalty(string playerId)
+        {
+            if (!_playerSnapPenaltyState.ContainsKey(playerId)) throw new ArgumentException();
+
+            _playerSnapPenaltyState[playerId] = SnapPenaltyState.PenaltyApplied;
+        }
+
+        public bool HasPenaltyApplied(string playerId)
+        {
+            if (!_playerSnapPenaltyState.ContainsKey(playerId)) throw new ArgumentException();
+
+            return _playerSnapPenaltyState[playerId] == SnapPenaltyState.PenaltyApplied;
         }
 
         public int NumberOfCards(string playerId)

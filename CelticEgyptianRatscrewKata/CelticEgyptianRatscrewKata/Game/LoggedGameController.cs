@@ -37,7 +37,7 @@ namespace CelticEgyptianRatscrewKata.Game
                 case PlayCardResultValidity.PlayerHasNoCards:
                     return string.Format("{0} had no cards so couldn't play", player.Name);
                 case PlayCardResultValidity.PlayedOutOfTurn:
-                    return string.Format("{0} has played {1} but it was out of turn", player.Name, playCardResult.PlayedCard);
+                    return string.Format("{0} has played {1} but it was out of turn and has had a penalty applied", player.Name, playCardResult.PlayedCard);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

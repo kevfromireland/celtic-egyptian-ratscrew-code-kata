@@ -63,7 +63,10 @@ namespace CelticEgyptianRatscrewKata.Game
                 return PlayCardResult.NoCard();
 
             if (_gameState.CurrentPlayer != player.Name)
+            {
+                _gameState.ApplyPenalty(player.Name);
                 return PlayCardResult.OutOfTurn(_gameState.AddCardToBottom(player.Name));
+            }
 
             var playCardResult = PlayCardResult.Valid(_gameState.PlayCard(player.Name));
 

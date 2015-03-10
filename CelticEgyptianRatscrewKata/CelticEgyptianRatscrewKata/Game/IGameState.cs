@@ -45,5 +45,7 @@ namespace CelticEgyptianRatscrewKata.Game
         void Clear();
 
         int NumberOfCards(string name);
+        void ApplyPenalty(string playerId);
+        bool HasPenaltyApplied(string playerId);
     }
 }
