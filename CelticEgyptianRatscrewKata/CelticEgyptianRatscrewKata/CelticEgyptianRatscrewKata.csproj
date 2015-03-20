@@ -46,10 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Card.cs" />
+    <Compile Include="Game\CalloutSequence.cs" />
+    <Compile Include="Game\CalloutSnapRule.cs" />
+    <Compile Include="Game\ICalloutSequence.cs" />
     <Compile Include="Game\IGameController.cs" />
     <Compile Include="Game\IGameFactory.cs" />
     <Compile Include="Game\IPenalties.cs" />
     <Compile Include="Game\IPlayerSequence.cs" />
+    <Compile Include="Game\LoggedCalloutSequence.cs" />
     <Compile Include="Game\LoggedGameController.cs" />
     <Compile Include="Game\LoggedPenalties.cs" />
     <Compile Include="Game\Penalties.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="SnapRules\StandardSnapRule.cs" />
     <Compile Include="Tests\EndToEndPenaltyTests.cs" />
     <Compile Include="Tests\PlayerSequenceTests.cs" />
+    <Compile Include="Tests\SnapRules\CallOutSequenceTests.cs" />
     <Compile Include="Tests\SnapRules\DarkQueenRuleTests.cs" />
     <Compile Include="Tests\SnapRules\SandwichSnapRuleTests.cs" />
     <Compile Include="Tests\SnapRules\StandardSnapRuleTests.cs" />

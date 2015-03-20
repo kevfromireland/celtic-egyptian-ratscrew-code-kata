@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CelticEgyptianRatscrewKata.GameSetup;
@@ -18,8 +17,9 @@ namespace CelticEgyptianRatscrewKata.Game
         private readonly IGameState _gameState;
         private readonly IPenalties _penalties;
         private readonly IPlayerSequence _playerSequence;
+        private readonly ICalloutSequence _calloutSequence;
 
-        public GameController(IGameState gameState, ISnapValidator snapValidator, IDealer dealer, IShuffler shuffler, IPenalties penalties, IPlayerSequence playerSequence)
+        public GameController(IGameState gameState, ISnapValidator snapValidator, IDealer dealer, IShuffler shuffler, IPenalties penalties, IPlayerSequence playerSequence, ICalloutSequence calloutSequence)
         {
             _players = new List<IPlayer>();
             _gameState = gameState;
@@ -28,6 +28,7 @@ namespace CelticEgyptianRatscrewKata.Game
             _shuffler = shuffler;
             _penalties = penalties;
             _playerSequence = playerSequence;
+            _calloutSequence = calloutSequence;
         }
 
         public IEnumerable<IPlayer> Players
@@ -144,7 +145,9 @@ namespace CelticEgyptianRatscrewKata.Game
         private Card ExecutePlayCard(IPlayer player)
         {
             _playerSequence.AdvanceToNextPlayer();
-            return _gameState.PlayCard(player.Name);
+            var playedCard = _gameState.PlayCard(player.Name);
+            _calloutSequence.Callout();
+            return playedCard;
         }
 
         private Card ExecuteAttemptToPlayOutOfTurn(IPlayer player)

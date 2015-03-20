@@ -35,6 +35,11 @@ namespace CelticEgyptianRatscrewKata
             return _cards.ElementAt(i);
         }
 
+        public Card TopCard
+        {
+            get { return _cards.First(); }
+        }
+
         public void RemoveCardAt(int i)
         {
             _cards.RemoveAt(i);
